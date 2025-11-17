@@ -22,52 +22,33 @@ const MOODS = [
   { key: 'loved', emoji: '🥰', label: 'Loved' },
 ];
 
-// Cute Korean aesthetic + studying vibe stickers
+// Cute Korean aesthetic + studying vibe stickers (IMAGE URLs)
 const STICKERS = [
-  // Cute study/work
-  { type: 'emoji', value: '📚' },
-  { type: 'emoji', value: '✏️' },
-  { type: 'emoji', value: '📖' },
-  { type: 'emoji', value: '📝' },
-  { type: 'emoji', value: '💻' },
-  { type: 'emoji', value: '☕' },
-  { type: 'emoji', value: '🍵' },
-
-  // Cute Korean aesthetic
-  { type: 'emoji', value: '🌸' },
-  { type: 'emoji', value: '🌷' },
-  { type: 'emoji', value: '🌼' },
-  { type: 'emoji', value: '💮' },
-  { type: 'emoji', value: '🎀' },
-  { type: 'emoji', value: '🧸' },
-  { type: 'emoji', value: '🎈' },
-
-  // Soft/dreamy
-  { type: 'emoji', value: '☁️' },
-  { type: 'emoji', value: '🌙' },
-  { type: 'emoji', value: '⭐' },
-  { type: 'emoji', value: '✨' },
-  { type: 'emoji', value: '💫' },
-
-  // Cute food/drink
-  { type: 'emoji', value: '🍰' },
-  { type: 'emoji', value: '🧋' },
-  { type: 'emoji', value: '🍓' },
-  { type: 'emoji', value: '🍡' },
-  { type: 'emoji', value: '🍙' },
-
-  // Hearts
-  { type: 'emoji', value: '💗' },
-  { type: 'emoji', value: '💖' },
-  { type: 'emoji', value: '💝' },
-  { type: 'emoji', value: '💕' },
-
-  // Fun/cute
-  { type: 'emoji', value: '🎨' },
-  { type: 'emoji', value: '🎵' },
-  { type: 'emoji', value: '🎧' },
-  { type: 'emoji', value: '🦋' },
-  { type: 'emoji', value: '🌈' },
+  // Using placeholder cute sticker images - you can replace with your own URLs
+  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/cherry-blossom_1f338.png' },
+  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/sparkles_2728.png' },
+  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/star_2b50.png' },
+  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/cloud_2601-fe0f.png' },
+  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/rainbow_1f308.png' },
+  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/strawberry_1f353.png' },
+  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/birthday-cake_1f382.png' },
+  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/bubble-tea_1f9cb.png' },
+  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/books_1f4da.png' },
+  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/pencil_270f-fe0f.png' },
+  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/laptop_1f4bb.png' },
+  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/hot-beverage_2615.png' },
+  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/ribbon_1f380.png' },
+  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/teddy-bear_1f9f8.png' },
+  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/crescent-moon_1f319.png' },
+  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/butterfly_1f98b.png' },
+  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/sparkle_2747-fe0f.png' },
+  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/two-hearts_1f495.png' },
+  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/sparkling-heart_1f496.png' },
+  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/growing-heart_1f497.png' },
+  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/artist-palette_1f3a8.png' },
+  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/musical-note_1f3b5.png' },
+  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/headphone_1f3a7.png' },
+  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/balloon_1f388.png' },
 ];
 
 export default function App() {
@@ -159,7 +140,7 @@ export default function App() {
   };
 
   const addSticker = (sticker) => {
-    setStickers([...stickers, sticker.value]);
+    setStickers([...stickers, sticker]); // Store the whole sticker object
   };
 
   if (showEditor) {
@@ -221,7 +202,7 @@ export default function App() {
           {stickers.length > 0 && (
             <View style={styles.stickerRow}>
               {stickers.map((s, i) => (
-                <Text key={i} style={styles.selectedSticker}>{s}</Text>
+                <Image key={i} source={{ uri: s.value }} style={styles.selectedSticker} />
               ))}
             </View>
           )}
@@ -231,7 +212,7 @@ export default function App() {
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.stickerPicker}>
             {STICKERS.map((s, i) => (
               <TouchableOpacity key={i} onPress={() => addSticker(s)} style={styles.stickerButton}>
-                <Text style={styles.stickerEmoji}>{s.value}</Text>
+                <Image source={{ uri: s.value }} style={styles.stickerPickerImage} />
               </TouchableOpacity>
             ))}
           </ScrollView>
@@ -287,7 +268,11 @@ export default function App() {
             {item.stickers && item.stickers.length > 0 && (
               <View style={styles.entryStickers}>
                 {item.stickers.map((s, i) => (
-                  <Text key={i} style={styles.entrySticker}>{s}</Text>
+                  <Image
+                    key={i}
+                    source={{ uri: s.value || s }}
+                    style={styles.entrySticker}
+                  />
                 ))}
               </View>
             )}
@@ -405,17 +390,23 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   selectedSticker: {
-    fontSize: 32,
+    width: 48,
+    height: 48,
     marginRight: 8,
+    marginBottom: 8,
   },
   stickerPicker: {
     marginBottom: 16,
   },
   stickerButton: {
     marginRight: 12,
+    padding: 4,
+    backgroundColor: '#fff',
+    borderRadius: 8,
   },
-  stickerEmoji: {
-    fontSize: 36,
+  stickerPickerImage: {
+    width: 50,
+    height: 50,
   },
   tools: {
     flexDirection: 'row',
@@ -482,11 +473,14 @@ const styles = StyleSheet.create({
   },
   entryStickers: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     marginVertical: 8,
   },
   entrySticker: {
-    fontSize: 24,
+    width: 32,
+    height: 32,
     marginRight: 6,
+    marginBottom: 6,
   },
   deleteButton: {
     marginTop: 12,
