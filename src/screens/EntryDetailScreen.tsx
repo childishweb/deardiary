@@ -76,7 +76,7 @@ export default function EntryDetailScreen({ navigation, route }: Props) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <LinearGradient
         colors={[colors.gradientStart, colors.gradientEnd]}
         style={styles.header}

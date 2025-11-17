@@ -58,7 +58,7 @@ export default function EntryEditorScreen({ navigation, route }: Props) {
 
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
+      allowsEditing: false,
       quality: 0.8,
     });
 
@@ -76,7 +76,7 @@ export default function EntryEditorScreen({ navigation, route }: Props) {
     }
 
     const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
+      allowsEditing: false,
       quality: 0.8,
     });
 
@@ -125,7 +125,7 @@ export default function EntryEditorScreen({ navigation, route }: Props) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <LinearGradient
         colors={[colors.gradientStart, colors.gradientEnd]}
         style={styles.header}
