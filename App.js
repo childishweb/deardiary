@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,8 @@ import {
   ScrollView,
   Image,
   Alert,
+  PanResponder,
+  Animated,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
@@ -92,6 +94,54 @@ const STICKERS = [
   { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F3A8.png' }, // artist palette
 ];
 
+// Draggable Sticker Component
+const DraggableSticker = ({ sticker, onUpdate, onSelect, isSelected }) => {
+  const pan = useRef(new Animated.ValueXY({ x: sticker.x, y: sticker.y })).current;
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderGrant: () => {
+        onSelect(sticker.id);
+        pan.setOffset({
+          x: pan.x._value,
+          y: pan.y._value
+        });
+        pan.setValue({ x: 0, y: 0 });
+      },
+      onPanResponderMove: Animated.event(
+        [null, { dx: pan.x, dy: pan.y }],
+        { useNativeDriver: false }
+      ),
+      onPanResponderRelease: (e, gesture) => {
+        pan.flattenOffset();
+        const newX = pan.x._value;
+        const newY = pan.y._value;
+        onUpdate(sticker.id, { x: newX, y: newY });
+      }
+    })
+  ).current;
+
+  return (
+    <Animated.View
+      {...panResponder.panHandlers}
+      style={[
+        styles.draggableSticker,
+        {
+          transform: pan.getTranslateTransform(),
+        },
+        isSelected && styles.selectedStickerBorder
+      ]}
+    >
+      <Image
+        source={{ uri: sticker.value }}
+        style={{ width: sticker.size, height: sticker.size }}
+        resizeMode="contain"
+      />
+    </Animated.View>
+  );
+};
+
 export default function App() {
   const [entries, setEntries] = useState([]);
   const [showEditor, setShowEditor] = useState(false);
@@ -100,6 +150,7 @@ export default function App() {
   const [mood, setMood] = useState(null);
   const [photos, setPhotos] = useState([]);
   const [stickers, setStickers] = useState([]);
+  const [selectedStickerId, setSelectedStickerId] = useState(null);
 
   useEffect(() => {
     loadEntries();
@@ -139,6 +190,7 @@ export default function App() {
     setMood(null);
     setPhotos([]);
     setStickers([]);
+    setSelectedStickerId(null);
     setShowEditor(false);
   };
 
@@ -180,15 +232,50 @@ export default function App() {
     }
   };
 
-  const addSticker = (sticker) => {
-    setStickers([...stickers, sticker]); // Store the whole sticker object
+  const addSticker = (stickerTemplate) => {
+    const newSticker = {
+      id: Date.now().toString() + Math.random(),
+      value: stickerTemplate.value,
+      x: 50, // Default position
+      y: 50,
+      size: 80, // Default size
+    };
+    setStickers([...stickers, newSticker]);
+    setSelectedStickerId(newSticker.id);
+  };
+
+  const updateSticker = (id, updates) => {
+    setStickers(stickers.map(s => s.id === id ? { ...s, ...updates } : s));
+  };
+
+  const deleteSelectedSticker = () => {
+    if (selectedStickerId) {
+      setStickers(stickers.filter(s => s.id !== selectedStickerId));
+      setSelectedStickerId(null);
+    }
+  };
+
+  const resizeSelectedSticker = (newSize) => {
+    if (selectedStickerId) {
+      updateSticker(selectedStickerId, { size: newSize });
+    }
+  };
+
+  const handleCancel = () => {
+    setTitle('');
+    setContent('');
+    setMood(null);
+    setPhotos([]);
+    setStickers([]);
+    setSelectedStickerId(null);
+    setShowEditor(false);
   };
 
   if (showEditor) {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => setShowEditor(false)}>
+          <TouchableOpacity onPress={handleCancel}>
             <Text style={styles.headerButton}>Cancel</Text>
           </TouchableOpacity>
           <Text style={styles.headerTitle}>New Entry</Text>
@@ -221,14 +308,48 @@ export default function App() {
             onChangeText={setTitle}
           />
 
-          {/* Content */}
-          <TextInput
-            style={styles.contentInput}
-            placeholder="What's on your mind?"
-            value={content}
-            onChangeText={setContent}
-            multiline
-          />
+          {/* Content with Sticker Overlay */}
+          <View style={styles.contentContainer}>
+            <TextInput
+              style={styles.contentInput}
+              placeholder="What's on your mind?"
+              value={content}
+              onChangeText={setContent}
+              multiline
+            />
+
+            {/* Draggable Stickers Overlay */}
+            {stickers.map((sticker) => (
+              <DraggableSticker
+                key={sticker.id}
+                sticker={sticker}
+                onUpdate={updateSticker}
+                onSelect={setSelectedStickerId}
+                isSelected={selectedStickerId === sticker.id}
+              />
+            ))}
+          </View>
+
+          {/* Sticker Size Controls */}
+          {selectedStickerId && (
+            <View style={styles.stickerControls}>
+              <Text style={styles.controlLabel}>Resize Sticker</Text>
+              <View style={styles.sizeButtons}>
+                <TouchableOpacity onPress={() => resizeSelectedSticker(50)} style={styles.sizeButton}>
+                  <Text style={styles.sizeButtonText}>Small</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => resizeSelectedSticker(80)} style={styles.sizeButton}>
+                  <Text style={styles.sizeButtonText}>Medium</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => resizeSelectedSticker(120)} style={styles.sizeButton}>
+                  <Text style={styles.sizeButtonText}>Large</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={deleteSelectedSticker} style={[styles.sizeButton, styles.deleteBtn]}>
+                  <Text style={styles.sizeButtonText}>Delete</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
 
           {/* Photos */}
           {photos.length > 0 && (
@@ -237,15 +358,6 @@ export default function App() {
                 <Image key={i} source={{ uri }} style={styles.photo} />
               ))}
             </ScrollView>
-          )}
-
-          {/* Stickers */}
-          {stickers.length > 0 && (
-            <View style={styles.stickerRow}>
-              {stickers.map((s, i) => (
-                <Image key={i} source={{ uri: s.value }} style={styles.selectedSticker} />
-              ))}
-            </View>
           )}
 
           {/* Sticker Picker */}
@@ -408,13 +520,58 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 12,
   },
+  contentContainer: {
+    position: 'relative',
+    minHeight: 200,
+    marginBottom: 16,
+  },
   contentInput: {
     fontSize: 16,
     padding: 12,
     backgroundColor: '#fff',
     borderRadius: 12,
-    minHeight: 150,
+    minHeight: 200,
     textAlignVertical: 'top',
+  },
+  draggableSticker: {
+    position: 'absolute',
+    padding: 4,
+  },
+  selectedStickerBorder: {
+    borderWidth: 2,
+    borderColor: '#FF6B9D',
+    borderRadius: 8,
+    borderStyle: 'dashed',
+  },
+  stickerControls: {
+    backgroundColor: '#fff',
+    padding: 12,
+    borderRadius: 12,
+    marginBottom: 16,
+  },
+  controlLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#2C2C2C',
+    marginBottom: 8,
+  },
+  sizeButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  sizeButton: {
+    backgroundColor: '#FF6B9D',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  sizeButtonText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  deleteBtn: {
+    backgroundColor: '#FF4444',
   },
   photoRow: {
     marginTop: 16,
