@@ -22,33 +22,74 @@ const MOODS = [
   { key: 'loved', emoji: '🥰', label: 'Loved' },
 ];
 
-// Cute Korean aesthetic + studying vibe stickers (IMAGE URLs)
+// Cute Korean aesthetic + studying vibe stickers - OpenMoji illustrated style
 const STICKERS = [
-  // Using placeholder cute sticker images - you can replace with your own URLs
-  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/cherry-blossom_1f338.png' },
-  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/sparkles_2728.png' },
-  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/star_2b50.png' },
-  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/cloud_2601-fe0f.png' },
-  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/rainbow_1f308.png' },
-  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/strawberry_1f353.png' },
-  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/birthday-cake_1f382.png' },
-  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/bubble-tea_1f9cb.png' },
-  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/books_1f4da.png' },
-  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/pencil_270f-fe0f.png' },
-  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/laptop_1f4bb.png' },
-  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/hot-beverage_2615.png' },
-  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/ribbon_1f380.png' },
-  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/teddy-bear_1f9f8.png' },
-  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/crescent-moon_1f319.png' },
-  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/butterfly_1f98b.png' },
-  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/sparkle_2747-fe0f.png' },
-  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/two-hearts_1f495.png' },
-  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/sparkling-heart_1f496.png' },
-  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/growing-heart_1f497.png' },
-  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/artist-palette_1f3a8.png' },
-  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/musical-note_1f3b5.png' },
-  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/headphone_1f3a7.png' },
-  { type: 'image', value: 'https://em-content.zobj.net/source/apple/391/balloon_1f388.png' },
+  // Hearts & Love
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F49C.png' }, // purple heart
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F495.png' }, // two hearts
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F496.png' }, // sparkling heart
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F497.png' }, // growing heart
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F498.png' }, // heart with arrow
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F49D.png' }, // heart with ribbon
+
+  // Flowers & Nature
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F338.png' }, // cherry blossom
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F33C.png' }, // blossom
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F337.png' }, // tulip
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F33B.png' }, // sunflower
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F339.png' }, // rose
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F340.png' }, // four leaf clover
+
+  // Stars & Sparkles
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/2B50.png' }, // star
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F31F.png' }, // glowing star
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F320.png' }, // shooting star
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/2728.png' }, // sparkles
+
+  // Cute Animals
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F431.png' }, // cat face
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F430.png' }, // rabbit face
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F43B.png' }, // bear
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F428.png' }, // koala
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F439.png' }, // hamster
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F98B.png' }, // butterfly
+
+  // Study & School
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F4DA.png' }, // books
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F4D6.png' }, // open book
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/270F.png' }, // pencil
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F58A.png' }, // pen
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F4DD.png' }, // memo
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F4AF.png' }, // 100 points
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F393.png' }, // graduation cap
+
+  // Food & Treats
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F370.png' }, // cake
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F382.png' }, // birthday cake
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F369.png' }, // donut
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F36D.png' }, // lollipop
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F36A.png' }, // cookie
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F9CB.png' }, // bubble tea
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/2615.png' }, // hot beverage
+
+  // Objects & Decorations
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F48E.png' }, // gem stone
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F381.png' }, // wrapped gift
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F380.png' }, // ribbon
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F388.png' }, // balloon
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F389.png' }, // party popper
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F38A.png' }, // confetti ball
+
+  // Weather & Sky
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F308.png' }, // rainbow
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/2601.png' }, // cloud
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F319.png' }, // crescent moon
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F31E.png' }, // sun with face
+
+  // Music & Art
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F3B5.png' }, // musical note
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F3B6.png' }, // musical notes
+  { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F3A8.png' }, // artist palette
 ];
 
 export default function App() {
