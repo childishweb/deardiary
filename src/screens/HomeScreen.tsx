@@ -16,7 +16,7 @@ import { RootStackParamList } from '../navigation/AppNavigator';
 import { DiaryEntry } from '../types';
 import { storageUtils } from '../utils/storage';
 import { colors, spacing, borderRadius, fontSize, shadows } from '../constants/theme';
-import MusicPlayer from '../components/MusicPlayer';
+// import MusicPlayer from '../components/MusicPlayer';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 
@@ -113,7 +113,7 @@ export default function HomeScreen({ navigation }: Props) {
       </LinearGradient>
 
       <View style={styles.content}>
-        <MusicPlayer />
+        {/* <MusicPlayer /> */}
 
         <View style={styles.searchContainer}>
           <Ionicons name="search" size={20} color={colors.textLight} />
