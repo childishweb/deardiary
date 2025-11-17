@@ -22,7 +22,53 @@ const MOODS = [
   { key: 'loved', emoji: '🥰', label: 'Loved' },
 ];
 
-const STICKERS = ['❤️', '💕', '⭐', '✨', '🌸', '🌺', '🦋', '🌈', '☀️', '🌙', '🍓', '🧁', '🐱', '🐰', '💫', '🌟'];
+// Cute Korean aesthetic + studying vibe stickers
+const STICKERS = [
+  // Cute study/work
+  { type: 'emoji', value: '📚' },
+  { type: 'emoji', value: '✏️' },
+  { type: 'emoji', value: '📖' },
+  { type: 'emoji', value: '📝' },
+  { type: 'emoji', value: '💻' },
+  { type: 'emoji', value: '☕' },
+  { type: 'emoji', value: '🍵' },
+
+  // Cute Korean aesthetic
+  { type: 'emoji', value: '🌸' },
+  { type: 'emoji', value: '🌷' },
+  { type: 'emoji', value: '🌼' },
+  { type: 'emoji', value: '💮' },
+  { type: 'emoji', value: '🎀' },
+  { type: 'emoji', value: '🧸' },
+  { type: 'emoji', value: '🎈' },
+
+  // Soft/dreamy
+  { type: 'emoji', value: '☁️' },
+  { type: 'emoji', value: '🌙' },
+  { type: 'emoji', value: '⭐' },
+  { type: 'emoji', value: '✨' },
+  { type: 'emoji', value: '💫' },
+
+  // Cute food/drink
+  { type: 'emoji', value: '🍰' },
+  { type: 'emoji', value: '🧋' },
+  { type: 'emoji', value: '🍓' },
+  { type: 'emoji', value: '🍡' },
+  { type: 'emoji', value: '🍙' },
+
+  // Hearts
+  { type: 'emoji', value: '💗' },
+  { type: 'emoji', value: '💖' },
+  { type: 'emoji', value: '💝' },
+  { type: 'emoji', value: '💕' },
+
+  // Fun/cute
+  { type: 'emoji', value: '🎨' },
+  { type: 'emoji', value: '🎵' },
+  { type: 'emoji', value: '🎧' },
+  { type: 'emoji', value: '🦋' },
+  { type: 'emoji', value: '🌈' },
+];
 
 export default function App() {
   const [entries, setEntries] = useState([]);
@@ -113,7 +159,7 @@ export default function App() {
   };
 
   const addSticker = (sticker) => {
-    setStickers([...stickers, sticker]);
+    setStickers([...stickers, sticker.value]);
   };
 
   if (showEditor) {
@@ -185,7 +231,7 @@ export default function App() {
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.stickerPicker}>
             {STICKERS.map((s, i) => (
               <TouchableOpacity key={i} onPress={() => addSticker(s)} style={styles.stickerButton}>
-                <Text style={styles.stickerEmoji}>{s}</Text>
+                <Text style={styles.stickerEmoji}>{s.value}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
