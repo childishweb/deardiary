@@ -94,30 +94,96 @@ const STICKERS = [
   { type: 'image', value: 'https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/618x618/1F3A8.png' }, // artist palette
 ];
 
-// Draggable Sticker Component
-const DraggableSticker = ({ sticker, onUpdate, onSelect, isSelected }) => {
+// Draggable & Resizable Sticker Component with Gestures
+const DraggableSticker = ({ sticker, onUpdate, onDelete }) => {
   const pan = useRef(new Animated.ValueXY({ x: sticker.x, y: sticker.y })).current;
+  const scale = useRef(new Animated.Value(sticker.size / 80)).current;
+  const rotate = useRef(new Animated.Value(sticker.rotation || 0)).current;
+
+  const lastScale = useRef(sticker.size / 80);
+  const lastRotate = useRef(sticker.rotation || 0);
+  const distance = useRef(0);
+  const angle = useRef(0);
 
   const panResponder = useRef(
     PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
+      onStartShouldSetPanResponder: (evt) => evt.nativeEvent.touches.length === 1,
+      onMoveShouldSetPanResponder: (evt) => evt.nativeEvent.touches.length === 1,
+      onStartShouldSetPanResponderCapture: () => true,
+      onMoveShouldSetPanResponderCapture: () => true,
+
       onPanResponderGrant: () => {
-        onSelect(sticker.id);
         pan.setOffset({
           x: pan.x._value,
           y: pan.y._value
         });
         pan.setValue({ x: 0, y: 0 });
       },
-      onPanResponderMove: Animated.event(
-        [null, { dx: pan.x, dy: pan.y }],
-        { useNativeDriver: false }
-      ),
-      onPanResponderRelease: (e, gesture) => {
+
+      onPanResponderMove: (evt, gesture) => {
+        const touches = evt.nativeEvent.touches;
+
+        // Single touch - drag
+        if (touches.length === 1) {
+          pan.setValue({ x: gesture.dx, y: gesture.dy });
+        }
+
+        // Two touches - pinch to zoom and rotate
+        if (touches.length === 2) {
+          const touch1 = touches[0];
+          const touch2 = touches[1];
+
+          // Calculate distance for scaling
+          const currentDistance = Math.sqrt(
+            Math.pow(touch2.pageX - touch1.pageX, 2) +
+            Math.pow(touch2.pageY - touch1.pageY, 2)
+          );
+
+          // Calculate angle for rotation
+          const currentAngle = Math.atan2(
+            touch2.pageY - touch1.pageY,
+            touch2.pageX - touch1.pageX
+          ) * 180 / Math.PI;
+
+          if (distance.current === 0) {
+            distance.current = currentDistance;
+            angle.current = currentAngle;
+          } else {
+            // Scale
+            const scaleChange = currentDistance / distance.current;
+            const newScale = lastScale.current * scaleChange;
+            const clampedScale = Math.max(0.5, Math.min(3, newScale));
+            scale.setValue(clampedScale);
+
+            // Rotate
+            const rotateChange = currentAngle - angle.current;
+            const newRotate = lastRotate.current + rotateChange;
+            rotate.setValue(newRotate);
+          }
+        }
+      },
+
+      onPanResponderRelease: () => {
         pan.flattenOffset();
         const newX = pan.x._value;
         const newY = pan.y._value;
-        onUpdate(sticker.id, { x: newX, y: newY });
+
+        const currentScale = scale._value;
+        lastScale.current = currentScale;
+        const newSize = Math.round(currentScale * 80);
+
+        const currentRotate = rotate._value;
+        lastRotate.current = currentRotate;
+
+        distance.current = 0;
+        angle.current = 0;
+
+        onUpdate(sticker.id, {
+          x: newX,
+          y: newY,
+          size: newSize,
+          rotation: currentRotate
+        });
       }
     })
   ).current;
@@ -128,16 +194,31 @@ const DraggableSticker = ({ sticker, onUpdate, onSelect, isSelected }) => {
       style={[
         styles.draggableSticker,
         {
-          transform: pan.getTranslateTransform(),
-        },
-        isSelected && styles.selectedStickerBorder
+          transform: [
+            { translateX: pan.x },
+            { translateY: pan.y },
+            { scale: scale },
+            { rotate: rotate.interpolate({
+                inputRange: [0, 360],
+                outputRange: ['0deg', '360deg']
+              })
+            }
+          ],
+        }
       ]}
     >
       <Image
         source={{ uri: sticker.value }}
-        style={{ width: sticker.size, height: sticker.size }}
+        style={{ width: 80, height: 80 }}
         resizeMode="contain"
       />
+      <TouchableOpacity
+        style={styles.stickerDeleteBtn}
+        onPress={() => onDelete(sticker.id)}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+      >
+        <Text style={styles.stickerDeleteText}>✕</Text>
+      </TouchableOpacity>
     </Animated.View>
   );
 };
@@ -150,7 +231,6 @@ export default function App() {
   const [mood, setMood] = useState(null);
   const [photos, setPhotos] = useState([]);
   const [stickers, setStickers] = useState([]);
-  const [selectedStickerId, setSelectedStickerId] = useState(null);
 
   useEffect(() => {
     loadEntries();
@@ -190,7 +270,6 @@ export default function App() {
     setMood(null);
     setPhotos([]);
     setStickers([]);
-    setSelectedStickerId(null);
     setShowEditor(false);
   };
 
@@ -236,29 +315,20 @@ export default function App() {
     const newSticker = {
       id: Date.now().toString() + Math.random(),
       value: stickerTemplate.value,
-      x: 50, // Default position
+      x: 50,
       y: 50,
-      size: 80, // Default size
+      size: 80,
+      rotation: 0,
     };
     setStickers([...stickers, newSticker]);
-    setSelectedStickerId(newSticker.id);
   };
 
   const updateSticker = (id, updates) => {
     setStickers(stickers.map(s => s.id === id ? { ...s, ...updates } : s));
   };
 
-  const deleteSelectedSticker = () => {
-    if (selectedStickerId) {
-      setStickers(stickers.filter(s => s.id !== selectedStickerId));
-      setSelectedStickerId(null);
-    }
-  };
-
-  const resizeSelectedSticker = (newSize) => {
-    if (selectedStickerId) {
-      updateSticker(selectedStickerId, { size: newSize });
-    }
+  const deleteSticker = (id) => {
+    setStickers(stickers.filter(s => s.id !== id));
   };
 
   const handleCancel = () => {
@@ -267,7 +337,6 @@ export default function App() {
     setMood(null);
     setPhotos([]);
     setStickers([]);
-    setSelectedStickerId(null);
     setShowEditor(false);
   };
 
@@ -324,32 +393,10 @@ export default function App() {
                 key={sticker.id}
                 sticker={sticker}
                 onUpdate={updateSticker}
-                onSelect={setSelectedStickerId}
-                isSelected={selectedStickerId === sticker.id}
+                onDelete={deleteSticker}
               />
             ))}
           </View>
-
-          {/* Sticker Size Controls */}
-          {selectedStickerId && (
-            <View style={styles.stickerControls}>
-              <Text style={styles.controlLabel}>Resize Sticker</Text>
-              <View style={styles.sizeButtons}>
-                <TouchableOpacity onPress={() => resizeSelectedSticker(50)} style={styles.sizeButton}>
-                  <Text style={styles.sizeButtonText}>Small</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => resizeSelectedSticker(80)} style={styles.sizeButton}>
-                  <Text style={styles.sizeButtonText}>Medium</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => resizeSelectedSticker(120)} style={styles.sizeButton}>
-                  <Text style={styles.sizeButtonText}>Large</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={deleteSelectedSticker} style={[styles.sizeButton, styles.deleteBtn]}>
-                  <Text style={styles.sizeButtonText}>Delete</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          )}
 
           {/* Photos */}
           {photos.length > 0 && (
@@ -535,43 +582,28 @@ const styles = StyleSheet.create({
   },
   draggableSticker: {
     position: 'absolute',
-    padding: 4,
   },
-  selectedStickerBorder: {
-    borderWidth: 2,
-    borderColor: '#FF6B9D',
-    borderRadius: 8,
-    borderStyle: 'dashed',
-  },
-  stickerControls: {
-    backgroundColor: '#fff',
-    padding: 12,
-    borderRadius: 12,
-    marginBottom: 16,
-  },
-  controlLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#2C2C2C',
-    marginBottom: 8,
-  },
-  sizeButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  sizeButton: {
-    backgroundColor: '#FF6B9D',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-  },
-  sizeButtonText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  deleteBtn: {
+  stickerDeleteBtn: {
+    position: 'absolute',
+    top: -8,
+    right: -8,
     backgroundColor: '#FF4444',
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 5,
+  },
+  stickerDeleteText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+    lineHeight: 14,
   },
   photoRow: {
     marginTop: 16,
