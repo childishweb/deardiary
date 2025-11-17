@@ -1,0 +1,50 @@
+{
+  "expo": {
+    "name": "Dear Diary",
+    "slug": "deardiary",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFB6C1"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.deardiary.app",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "Dear Diary needs access to your photo library to add photos to your diary entries.",
+        "NSCameraUsageDescription": "Dear Diary needs access to your camera to take photos for your diary entries.",
+        "NSMicrophoneUsageDescription": "Dear Diary needs access to audio for background music."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFB6C1"
+      },
+      "package": "com.deardiary.app",
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ],
+      "edgeToEdgeEnabled": true
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Dear Diary needs access to your photos to add them to your diary entries.",
+          "cameraPermission": "Dear Diary needs access to your camera to take photos for your diary entries."
+        }
+      ]
+    ]
+  }
+}
